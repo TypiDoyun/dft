@@ -62,8 +62,12 @@ export class Complex {
             this.imagine *= other;
         }
         else {
-            this.real = this.real * other.real - this.imagine * other.imagine;
-            this.imagine = this.real * other.imagine + this.imagine * other.real;
+            const a = this.real;
+            const b = this.imagine;
+            const c = other.real;
+            const d = other.imagine;
+            this.real = a * c - b * d;
+            this.imagine = a * d + b * c;
         }
         return this;
     }
@@ -75,8 +79,12 @@ export class Complex {
         }
         else {
             const denominator = other.real ** 2 + other.imagine ** 2;
-            this.real = (this.real * other.real + this.imagine * other.imagine) / denominator;
-            this.imagine = (-this.real * other.imagine + this.imagine * other.real) / denominator;
+            const a = this.real;
+            const b = this.imagine;
+            const c = other.real;
+            const d = other.imagine;
+            this.real = (a * c + b * d) / denominator;
+            this.imagine = (-a * d + b * c) / denominator;
         }
         return this;
     }
@@ -88,7 +96,7 @@ export class Complex {
         }
         else {
             if (this.imagine === 0) return `${this.real}`;
-            else return `${this.real} ${Math.sign(this.imagine)} ${Math.abs(this.imagine)}i`;
+            else return `${this.real} ${Math.sign(this.imagine) === 1 ? "+" : "-"} ${Math.abs(this.imagine)}i`;
         }
     }
 }

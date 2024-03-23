@@ -8,12 +8,13 @@ export const dft = (xArr) => {
             const kn = (k * n) % N;
             const x = xArr[n];
             const w = wCache.get(kn) ?? Complex.expWithI(-2 * Math.PI / N * kn);
+            wCache.set(kn, w);
             XArr[k].add(x.clone.mul(w));
         }
     }
     return XArr.map(value => value.round(6));
 };
-const makeSample = (from, interval, to, func) => {
+export const makeSample = (from, interval, to, func) => {
     const sample = [];
     const relativeTo = to - from;
     let repeat = 0;
@@ -25,8 +26,10 @@ const makeSample = (from, interval, to, func) => {
     }
     return sample;
 };
-const sample = makeSample(0, 0.01, 9.99, x => {
-    const value = Math.cos(2 * Math.PI * 1.5 * x) + 2 * Math.cos(2 * Math.PI * 6.5 * x);
-    return Math.round(value * 1_000_000) / 1_000_000;
-}).map(element => new Complex(element));
-console.log(dft(sample));
+// const sample = makeSample(0, 0.01, 9.99, x => {
+//     const value = Math.cos(2 * Math.PI * 1.5 * x) + 2 * Math.cos(2 * Math.PI * 6.5 * x);
+//     return Math.round(value * 1_000_000) / 1_000_000;
+// }).map(element => new Complex(element));
+// console.log(
+//     dft(sample)
+// )
