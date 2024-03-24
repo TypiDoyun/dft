@@ -14,6 +14,28 @@ export const dft = (xArr) => {
     }
     return XArr.map(value => value.round(6));
 };
+export const fft = (xArr) => {
+    const N = xArr.length;
+    if (N === 1)
+        return xArr;
+    const even = [];
+    const odd = [];
+    for (let i = 0; i < N; i++) {
+        if (i % 2 === 0)
+            even.push(xArr[i]);
+        else
+            odd.push(xArr[i]);
+    }
+    const XEven = fft(even);
+    const XOdd = fft(odd);
+    const XArr = new Array(N);
+    for (let i = 0; i < N / 2; i++) {
+        const w = Complex.expWithI(-2 * Math.PI / N * i);
+        XArr[i] = XEven[i].clone.add(XOdd[i].clone.mul(w));
+        XArr[i + N / 2] = XEven[i].clone.sub(XOdd[i].clone.mul(w));
+    }
+    return XArr;
+};
 export const makeSample = (from, interval, to, func) => {
     const sample = [];
     const relativeTo = to - from;

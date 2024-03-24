@@ -1,10 +1,10 @@
 import "./dft.js";
-import { dft, makeSample } from "./dft.js";
+import { fft } from "./dft.js";
 import { Complex } from "./utils/complex.js";
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 let isHolding = false;
-const N = 200;
+const N = 100;
 const samples = new Array(N).fill(-1);
 window.addEventListener("load", () => {
     canvas.width = window.innerWidth;
@@ -35,31 +35,31 @@ canvas.addEventListener("mousemove", eventData => {
 });
 canvas.addEventListener("mouseup", eventData => {
     isHolding = false;
-    const sample = makeSample(0, 1 / 200, 1 - (1 / 200), x => {
-        const value = Math.cos(2 * Math.PI * 20 * x);
-        return Math.round(value * 1_000_000) / 1_000_000;
+    const sample = new Array(Math.pow(2, Math.ceil(Math.log2(N)))).fill(undefined).map((_, i) => {
+        return samples[i] ?? 0;
     });
-    const frequencies = dft(
+    const frequencies = fft(
     // sample.map(element => new Complex(element))
-    samples.map(element => new Complex((element / canvas.height - 0.5) * 2))).map(frequency => frequency);
+    sample.map(element => new Complex((element / canvas.height - 0.5) * 2))).map(frequency => frequency).slice(0, 100);
     context.strokeStyle = "#F00";
     context.beginPath();
     for (let i = 0; i < N - 1; i++) {
         const x = i * canvas.width / N;
         const nextX = (i + 1) * canvas.width / N;
-        moveTo(x, canvas.height - frequencies[i].real);
-        context.lineTo(nextX, canvas.height - (frequencies[i + 1].real * 10));
+        moveTo(x, (canvas.height / 2) - frequencies[i].real);
+        context.lineTo(nextX, (canvas.height / 2) - (frequencies[i + 1].real * 10));
     }
     context.stroke();
     context.closePath();
-    context.strokeStyle = "#F0F";
+    context.strokeStyle = "#00F";
     context.beginPath();
     for (let i = 0; i < N - 1; i++) {
         const x = i * canvas.width / N;
         const nextX = (i + 1) * canvas.width / N;
-        moveTo(x, canvas.height - frequencies[i].imagine);
-        context.lineTo(nextX, canvas.height - (frequencies[i + 1].imagine * 10));
+        moveTo(x, (canvas.height / 2) - frequencies[i].imagine);
+        context.lineTo(nextX, (canvas.height / 2) - (frequencies[i + 1].imagine * 10));
     }
     context.stroke();
     context.closePath();
+    console.log(frequencies.length);
 });
